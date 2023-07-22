@@ -5,16 +5,17 @@ import { Provider } from "react-redux";
 import store from "./utils/storeMain";
 import {
   RouterProvider,
-  createBrowserRouter,
+  createBrowserRouter
 } from "react-router-dom";
 import MainContainer from "./components/MainContainer";
+import Results from "./components/Results";
 
 import WatchPage from "./components/WatchPage";
 
 const appRouter = createBrowserRouter([
   {
     path: "/",
-    element: <Body />,
+    element: [<Head />, <Body/>],
     children: [
       {
         path: "/",
@@ -24,6 +25,10 @@ const appRouter = createBrowserRouter([
         path: "watch",
         element: <WatchPage />,
       },
+      {
+        path : "results/:searchQueary",
+        element : <Results/>
+      }
     ],
   },
 ]);
@@ -41,7 +46,7 @@ function App() {
           viedocontainer
             videocard
        */}
-        <Head />
+        {/* <Head /> */}
         <RouterProvider router={appRouter} />
       </div>
     </Provider>

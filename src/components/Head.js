@@ -3,30 +3,33 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleMenu } from "../utils/appSlice";
 import { YOUTUBE_SUGGESTION_API } from "../utils/constants";
 import { cacheResults } from "../utils/searchSlice";
+import { useNavigate } from "react-router-dom";
+
+
 
 const Head = () => {
   const [searchQueary, setSearchQueary] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-  const [showSuggestions, setShowSuggestions] =
-    useState(false);
+  const [showSuggestions, setShowSuggestions] =useState(false);
 
-  const searchcache = useSelector((store) => store.search);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (searchcache[searchQueary]) {
+    const searchcache = useSelector((store) => store.search);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+      useEffect(() => {
+      const timer = setTimeout(() => {
+        if (searchcache[searchQueary]) {
         setSuggestions(searchcache[searchQueary]);
-      } else {
+        } else {
         getSearchSugeestion();
-      }
-    }, 200);
+        }
+      }, 200);
 
-    return () => {
+      return () => {
       clearTimeout(timer);
-    };
-  }, [searchQueary]);
+      };
+    }, [searchQueary]);
 
-  const getSearchSugeestion = async () => {
+    const getSearchSugeestion = async () => {
     console.log("appi call" + searchQueary);
     const data = await fetch(
       YOUTUBE_SUGGESTION_API + searchQueary
@@ -40,7 +43,15 @@ const Head = () => {
         [searchQueary]: json[1],
       })
     );
-  };
+    };
+
+    const handleSubmit =(e) => {
+      e.preventDefault();
+      if(searchQueary){
+        navigate(`/results/${searchQueary}`);
+      }
+    }
+
 
   const toggleMenuHandler = () => {
     dispatch(toggleMenu());
@@ -62,7 +73,7 @@ const Head = () => {
         />
       </div>
       <div className="items-center col-span-10 p-3 m-3 ">
-        <div>
+        <form onSubmit={handleSubmit}>
           <input
             type="text"
             className="w-1/2 p-2 px-4 items-cente border border-gray-400 rounded-l-full"
@@ -76,7 +87,7 @@ const Head = () => {
           <button className="p-2 bg-gray-300 border border-gray-400 rounded-r-full">
             Search
           </button>
-        </div>
+        </form>
         {showSuggestions && (
           <div className="fixed bg-white py-2 px-2 w-[31rem] shadow-xl rounded-lg boder border-gray-200">
             <ul>
